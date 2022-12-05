@@ -1,8 +1,5 @@
-const RealEstate = artifacts.require("RealEstate");
-const Escrow = artifacts.require("escrow");
+const LandContract = artifacts.require("LandContract");
 
-module.exports = async function (deployer, network, accounts) {
-	let a = await deployer.deploy(RealEstate);
-
-	// deployer.deploy(Escrow, );
+module.exports = function (deployer) {
+	deployer.deploy(LandContract);
 };
