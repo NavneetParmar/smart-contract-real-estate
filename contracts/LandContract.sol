@@ -35,7 +35,7 @@ contract LandContract {
     mapping(address => Land[]) public ownedLands;
     mapping(address => uint256) balance;
 
-    function MyLandContract() public {
+    constructor() {
         owner = msg.sender;
         totalLandsCounter = 0;
     }
@@ -129,6 +129,20 @@ contract LandContract {
         returns (Land[] memory)
     {
         return ownedLands[_landHolder];
+    }
+
+    function getLandOfOwnerByLandID(uint256 _landID, address _landHolder)
+        public
+        view
+        returns (Land memory)
+    {
+        Land memory land;
+        for (uint256 i = 0; i < ownedLands[_landHolder].length; i++) {
+            if (ownedLands[_landHolder][i].landID == _landID) {
+                land = ownedLands[_landHolder][i];
+            }
+        }
+        return land;
     }
 
     function withdraw() public {
