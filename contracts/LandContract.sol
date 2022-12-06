@@ -35,8 +35,9 @@ contract LandContract {
     mapping(address => Land[]) public ownedLands;
     mapping(address => uint256) balance;
 
-    constructor() {
-        owner = msg.sender;
+    constructor(address _owner) {
+        require(_owner == msg.sender);
+        owner = payable(_owner);
         totalLandsCounter = 0;
     }
 
@@ -64,6 +65,14 @@ contract LandContract {
 
     function transferEther(address _rec, uint256 _amount) public payable {
         payable(address(_rec)).transfer(_amount);
+    }
+
+    function getContractBalance() public view returns (uint256) {
+        return address(this).balance;
+    }
+
+    function getBalance(address _address) public view returns (uint256) {
+        return address(_address).balance;
     }
 
     //2. SECOND OPERATION

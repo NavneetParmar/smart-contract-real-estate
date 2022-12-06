@@ -3,10 +3,10 @@ const { ethers } = require("ethers");
 
 const LandContract = artifacts.require("LandContract");
 
-// const token = (n) => {
-// 	return ethers.utils.parseUnits(n.toString(), "ether");
-// };
-// const ether = token;
+const token = (n) => {
+	return ethers.utils.parseUnits(n.toString(), "ether");
+};
+const ether = token;
 
 contract("Land", function (accounts) {
 	describe("Land", () => {
@@ -14,7 +14,7 @@ contract("Land", function (accounts) {
 		let owner, buyer;
 		before(async () => {
 			//Deploy smart contract
-			landContract = await LandContract.new();
+			landContract = await LandContract.new(accounts[0]);
 			contract = await LandContract.deployed();
 			console.log(
 				"*******************************************************************"
@@ -31,8 +31,8 @@ contract("Land", function (accounts) {
 				owner = accounts[0];
 				buyer = accounts[2];
 
-				await contract.addLand(owner, "Pune", 20);
-				await contract.addLand(owner, "Mumbai", 10);
+				await contract.addLand(owner, "Pune", ether(20));
+				await contract.addLand(owner, "Mumbai", ether(10));
 			});
 
 			it("getting number of lands", async () => {
@@ -48,10 +48,25 @@ contract("Land", function (accounts) {
 			});
 		});
 
+		describe("Transfer eth", () => {
+			it("transferring ether", async () => {
+				let contractBal = await contract.getContractBalance();
+				let ownerBal = await contract.getBalance(owner);
+				let buyerBal = await contract.getBalance(buyer);
+				console.log("contractBal", contractBal.toString());
+				console.log("ownerBal", ethers.utils.formatEther(ownerBal.toString()));
+				console.log("buyerBal", ethers.utils.formatEther(buyerBal.toString()));
+			});
+		});
+
 		describe("Fetch lands", () => {
 			it("Fetching lands by owner", async () => {
 				let lands = await contract.getLandsByOwner(owner);
-				// console.log("Fetching lands by owner", lands);
+				console.log(
+					"Fetching lands by owner",
+					lands[0].cost,
+					typeof lands[0].cost
+				);
 			});
 
 			it("Fetching lands by owner and index", async () => {
@@ -119,9 +134,9 @@ contract("Land", function (accounts) {
 
 				// await contract.RemoveFromSale(buyer, landID);
 
-				assert.equal(
-					`${landBeforeTransfer.wantSell}`,
-					"1",
+				assert.notEqual(
+					landBeforeTransfer.wantSell,
+					"0",
 					"Already not for sale"
 				);
 
@@ -132,7 +147,7 @@ contract("Land", function (accounts) {
 					buyer
 				);
 
-				assert.equal(
+				assert.notEqual(
 					landBeforeTransfer.wantSell,
 					landAfterTransfer.wantSell,
 					"Not removed from sale"
