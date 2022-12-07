@@ -31,11 +31,11 @@ contract LandContractManager {
     }
 
     function buy(uint256 daiAmount) external {
-        uint256 xxxAmount = toCrsip(daiAmount);
+        uint256 xxxAmount = toMeet(daiAmount);
         bool success = daiInstance.transferFrom(msg.sender, address(this), daiAmount);
         require(success,"Dai Transfer failed");
         success = meetInstance.transfer(msg.sender, xxxAmount);
-        require(success,"Crsip transfer failed");
+        require(success,"Meet transfer failed");
         emit BoughtMeetToken(daiAmount, xxxAmount, msg.sender);       
     }
 
@@ -44,7 +44,7 @@ contract LandContractManager {
         bool success = daiInstance.transfer(msg.sender, daiAmount);
         require(success, "Dai sell transfer failed");
         success = meetInstance.transferFrom(msg.sender, address(this), xxxAmount);
-        require(success, "Crsip transfer failed");
+        require(success, "Meet transfer failed");
         emit SoldMeetToken(xxxAmount, daiAmount, msg.sender);
     }
 
