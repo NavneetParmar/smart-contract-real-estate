@@ -49,29 +49,14 @@ contract("Land", function (accounts) {
 		});
 
 		describe("Transfer eth", () => {
-			it("BUY", async () => {
-				let land = await contract.getLandOfOwnerByLandID(1, owner);
-				await contract.approve(buyer, land.landID, land.cost, {
-					from: owner,
-				});
-
-				let b = await contract.buy(land, buyer);
-				let contractBal = await contract.getContractBalance();
-				let ownerBal = await contract.getBalance(owner);
-				let buyerBal = await contract.getBalance(buyer);
-				console.log("contractBal", contractBal.toString());
-				console.log("ownerBal", ethers.utils.formatEther(ownerBal.toString()));
-				console.log("buyerBal", ethers.utils.formatEther(buyerBal.toString()));
-			});
-
-			it("transferring ether", async () => {
-				// let contractBal = await contract.getContractBalance();
-				// let ownerBal = await contract.getBalance(owner);
-				// let buyerBal = await contract.getBalance(buyer);
-				// console.log("contractBal", contractBal.toString());
-				// console.log("ownerBal", ethers.utils.formatEther(ownerBal.toString()));
-				// console.log("buyerBal", ethers.utils.formatEther(buyerBal.toString()));
-			});
+			// it("transferring ether", async () => {
+			// let contractBal = await contract.getContractBalance();
+			// let ownerBal = await contract.getBalance(owner);
+			// let buyerBal = await contract.getBalance(buyer);
+			// console.log("contractBal", contractBal.toString());
+			// console.log("ownerBal", ethers.utils.formatEther(ownerBal.toString()));
+			// console.log("buyerBal", ethers.utils.formatEther(buyerBal.toString()));
+			// });
 		});
 
 		describe("Fetch lands", () => {
