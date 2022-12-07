@@ -25,6 +25,12 @@ contract LandContract {
         address indexed _to,
         uint256 _cost
     );
+    event Approval(
+        address indexed _owner,
+        address indexed _buyer,
+        uint256 _landID,
+        uint256 _amount
+    );
 
     modifier isOwner() {
         require(msg.sender == owner);
@@ -34,12 +40,16 @@ contract LandContract {
     //one account can hold many lands (many landTokens, each token one land)
     mapping(address => Land[]) public ownedLands;
     mapping(address => uint256) balance;
+    mapping(address => mapping(address => mapping(uint256 => uint256)))
+        public approvals;
 
     constructor(address _owner) {
         require(_owner == msg.sender);
         owner = payable(_owner);
         totalLandsCounter = 0;
     }
+
+    receive() external payable {}
 
     //properties to be sold
 
@@ -75,11 +85,34 @@ contract LandContract {
         return address(_address).balance;
     }
 
+    function approve(
+        address _buyer,
+        uint256 _landID,
+        uint256 _amount
+    ) public returns (bool success) {
+        approvals[msg.sender][_buyer][_landID] = _amount;
+        emit Approval(msg.sender, _buyer, _landID, _amount);
+        return true;
+    }
+
     //2. SECOND OPERATION
     //caller (owner/anyone) to transfer land to buyer provided caller is owner of the land
+
+    function buy(Land memory _land, address _buyer)
+        public
+        payable
+        returns (bool)
+    {
+        require(_land.cost <= approvals[msg.sender][_buyer][_land.landID]);
+        require(address(_buyer).balance >= _land.cost, "Insufficient funds");
+
+        return true;
+    }
+
     function transferLand(address _landBuyer, uint256 _landID)
         public
         payable
+        isOwner
         returns (bool)
     {
         //find out the particular land ID in owner's collectionexter

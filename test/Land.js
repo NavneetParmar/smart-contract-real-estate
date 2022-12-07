@@ -31,8 +31,8 @@ contract("Land", function (accounts) {
 				owner = accounts[0];
 				buyer = accounts[2];
 
-				await contract.addLand(owner, "Pune", ether(20));
-				await contract.addLand(owner, "Mumbai", ether(10));
+				await contract.addLand(owner, "Pune", BigInt(ether(20)));
+				await contract.addLand(owner, "Mumbai", BigInt(ether(10)));
 			});
 
 			it("getting number of lands", async () => {
@@ -49,13 +49,28 @@ contract("Land", function (accounts) {
 		});
 
 		describe("Transfer eth", () => {
-			it("transferring ether", async () => {
+			it("BUY", async () => {
+				let land = await contract.getLandOfOwnerByLandID(1, owner);
+				await contract.approve(buyer, land.landID, land.cost, {
+					from: owner,
+				});
+
+				let b = await contract.buy(land, buyer);
 				let contractBal = await contract.getContractBalance();
 				let ownerBal = await contract.getBalance(owner);
 				let buyerBal = await contract.getBalance(buyer);
 				console.log("contractBal", contractBal.toString());
 				console.log("ownerBal", ethers.utils.formatEther(ownerBal.toString()));
 				console.log("buyerBal", ethers.utils.formatEther(buyerBal.toString()));
+			});
+
+			it("transferring ether", async () => {
+				// let contractBal = await contract.getContractBalance();
+				// let ownerBal = await contract.getBalance(owner);
+				// let buyerBal = await contract.getBalance(buyer);
+				// console.log("contractBal", contractBal.toString());
+				// console.log("ownerBal", ethers.utils.formatEther(ownerBal.toString()));
+				// console.log("buyerBal", ethers.utils.formatEther(buyerBal.toString()));
 			});
 		});
 
